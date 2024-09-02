@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Nuevo Producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <%- include('partials/navbar') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Agregar producto</h2>
+                <p class="text-gray-600 mb-6">Llena los campos para registrar un nuevo producto en la base de datos.</p>
+                <form id="addProductForm" action="/index" method="POST">
+                    <div class="mb-4">
+                        <label for="nombre" class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ingresa el nombre del producto" required
+                               class="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="cantidad" class="block text-gray-700 text-sm font-bold mb-2">Cantidad</label>
+                        <input type="number" id="cantidad" name="cantidad" placeholder="Ingresa la cantidad" required
+                               class="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="precioCompra" class="block text-gray-700 text-sm font-bold mb-2">Precio de Compra</label>
+                        <input type="number" id="precioCompra" name="precioCompra" placeholder="Ingresa el precio de compra" step="0.01" required
+                               class="w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300">
+                    </div>
+                    
+                    <button type="submit" onclick="btnPedidos()" 
+                            class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-300">
+                        Agregar producto
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function btnPedidos() {
+            // Your btnPedidos function logic here
+        }
+    </script>
+</body>
+</html>

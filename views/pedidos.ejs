@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="h-full">
+    <div class="min-h-full">
+        <%- include('partials/navbar') %>
+
+        <header class="bg-white shadow">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-800">Pedidos</h1>
+            </div>
+        </header>
+
+        <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:gap-x-8">
+                <!-- Factura (Extremo Derecho) -->
+                <div class="lg:w-1/3 mb-8 lg:mb-0 order-2 lg:order-2">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800">Factura</h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="overflow-x-visible">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <input type="hidden" id="cliente-id" value="<%= clienteId %>">
+                                        <tr>
+                                            <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                            <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="factura-body" class="bg-white divide-y divide-gray-200">
+                                        <!-- Los productos se añadirán aquí dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-6 text-right">
+                                <p class="text-xl font-semibold text-gray-900">Total: $<span id="total-factura">0.00</span></p>
+                            </div>
+                            <div class="mt-6">
+                                <button id="finalizar-pedido" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    Finalizar Pedido
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de Pedido -->
+                <div class="lg:w-2/3 order-1 lg:order-1">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800">Agregar Producto</h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="products-bar mb-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-3">Productos Disponibles</h3>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                    <% if (productos && productos.length > 0) { %>
+                                        <% productos.forEach(function(producto) { %>
+                                            <div class="product-item relative group">
+                                                <a href="javascript:void(0)" class="product-link block p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200" data-producto="<%= producto.id %>" data-nombre="<%= producto.nombre_producto %>" data-precio="<%= producto.precio_compra %>" data-cantidad="<%= producto.cantidad %>">
+                                                    <%= producto.nombre_producto %>
+                                                </a>
+                                                <div class="dropdown-content absolute hidden group-hover:block bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10 w-48">
+                                                    <p class="text-sm text-gray-600">Precio de compra: $<%= producto.precio_compra %></p>
+                                                    <p class="text-sm text-gray-600">Cantidad disponible: <%= producto.cantidad %></p>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <p class="text-gray-500 italic">No hay productos disponibles</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <form id="formulario-pedido" class="space-y-6">
+                                <div>
+                                    <label for="producto-seleccionado" class="block text-sm font-medium text-gray-700">Producto Seleccionado</label>
+                                    <input type="text" id="producto-seleccionado" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" readonly>
+                                    <input type="hidden" id="producto-id">
+                                </div>
+                                <div>
+                                    <label for="cantidad" class="block text-sm font-medium text-gray-700">Cantidad</label>
+                                    <input type="number" name="cantidad" id="cantidad" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Ingrese la cantidad">
+                                </div>
+                                <div>
+                                    <label for="precio" class="block text-sm font-medium text-gray-700">Precio de Venta (COP)</label>
+                                    <input type="number" name="precio" id="precio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Ingrese el precio de venta">
+                                </div>
+                                <div>
+                                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        Agregar Producto
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const productLinks = document.querySelectorAll('.product-link');
+            const formularioPedido = document.getElementById('formulario-pedido');
+            const productoSeleccionado = document.getElementById('producto-seleccionado');
+            const productoId = document.getElementById('producto-id');
+            const facturaBody = document.getElementById('factura-body');
+            const totalFactura = document.getElementById('total-factura');
+            const finalizarPedidoBtn = document.getElementById('finalizar-pedido');
+            let productos = [];
+
+            productLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    productoSeleccionado.value = this.dataset.nombre;
+                    productoId.value = this.dataset.producto;
+                });
+            });
+
+            formularioPedido.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const cantidad = parseFloat(document.getElementById('cantidad').value);
+                const precio = parseFloat(document.getElementById('precio').value);
+                const productoLink = document.querySelector(`.product-link[data-producto="${productoId.value}"]`);
+                const cantidadDisponible = parseFloat(productoLink.dataset.cantidad);
+                
+                if (productoId.value && !isNaN(cantidad) && !isNaN(precio)) {
+                    if (cantidad > cantidadDisponible) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Inventario insuficiente',
+                            text: `Solo hay ${cantidadDisponible} unidades disponibles de este producto.`,
+                            confirmButtonColor: '#3085d6',
+                        });
+                        return;
+                    }
+
+                    const producto = {
+                        id: productoId.value,
+                        nombre: productoSeleccionado.value,
+                        cantidad: cantidad,
+                        precio: precio,
+                        total: cantidad * precio
+                    };
+                    productos.push(producto);
+                    actualizarFactura();
+                    formularioPedido.reset();
+                    productoSeleccionado.value = '';
+                    productoId.value = '';
+                }
+            });
+
+            function actualizarFactura() {
+                facturaBody.innerHTML = '';
+                let total = 0;
+
+                productos.forEach((producto, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${producto.nombre}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${producto.cantidad}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">$${producto.precio.toFixed(2)}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">$${producto.total.toFixed(2)}</td>
+                    `;
+                    facturaBody.appendChild(row);
+                    total += producto.total;
+                });
+
+                totalFactura.textContent = total.toFixed(2);
+            }
+
+            finalizarPedidoBtn.addEventListener('click', function() {
+                const clienteId = document.getElementById('cliente-id').value;
+
+                if (!clienteId || productos.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No se puede finalizar el pedido',
+                        text: 'No hay productos en la factura o falta el ID del cliente',
+                        confirmButtonColor: '#3085d6',
+                    });
+                    return;
+                }
+
+                axios.post('/finalizar-pedido', { cliente_id: clienteId, productos: productos })
+                    .then(function (response) {
+                        console.log('Respuesta del servidor:', response);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pedido finalizado',
+                            text: 'El pedido se ha finalizado con éxito',
+                            confirmButtonColor: '#3085d6',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                productos = [];
+                                actualizarFactura();
+                                console.log('Factura actualizada después de finalizar el pedido');
+                            }
+                        });
+                    })
+                    .catch(function (error) {
+                        console.error('Error al finalizar el pedido:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un error al finalizar el pedido: ' + (error.response?.data?.message || error.message),
+                            confirmButtonColor: '#3085d6',
+                        });
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

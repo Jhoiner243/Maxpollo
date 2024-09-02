@@ -1,0 +1,160 @@
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+    --primary-color: #3490dc;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --hover-color: #2779bd;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+}
+
+.navbar {
+    background-color: var(--background-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.navbar-logo i {
+    margin-right: 0.5rem;
+}
+
+.navbar-menu {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-menu li {
+    margin-left: 3.5rem;
+}
+
+.navbar-menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+}
+
+.navbar-menu a:hover {
+    color: var(--hover-color);
+}
+
+.navbar-menu i {
+    margin-right: 0.2rem;
+}
+
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .navbar-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--background-color);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-menu.active {
+        display: flex;
+    }
+
+    .navbar-menu li {
+        margin: 0;
+    }
+
+    .navbar-menu a {
+        padding: 1rem;
+    }
+
+    .navbar-toggle {
+        display: block;
+    }
+}
+    </STYle>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">
+                <i class="fas fa-box"></i>
+                <span>MAXPOLLO</span>
+            </a>
+            <button class="navbar-toggle" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-menu">
+                <li><a  onclick="btnPedidos()" href="/pedidos"><i class="fas fa-box"></i> Pedidos</a></li>
+                <li><a onclick="btnGanancias()" href="/ganancias"><i class="fas fa-dollar-sign"></i> Ganancias</a></li>
+                <li><a onclick="btnInventario()" href="/inventario"><i class="fas fa-warehouse"></i> Inventario</a></li>
+                <li><a onclick="btnPagos()" href="/pagos"><i class="fas fa-credit-card"></i> Pagos</a></li>
+                <li><a onclick="btnClientes()" href="/clientes"><i class="fas fa-users"></i> Clientes</a></li>
+            </ul>
+        </div>
+    </nav>
+    <script>
+        function btnClientes(){
+            window.location.href = 'clientes'
+        }
+        function btnPedidos(){
+            window.location.href = 'pedidos'
+        }
+        function btnGanancias(){
+            window.location.href = 'ganancias'
+        }
+        function btnInventario(){
+            window.location.href = 'inventario'
+        }
+        function btnPagos(){
+            window.location.href = 'pagos'
+        }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+    const navbarToggle = document.querySelector('.navbar-toggle');
+    const navbarMenu = document.querySelector('.navbar-menu');
+
+    navbarToggle.addEventListener('click', function() {
+        navbarMenu.classList.toggle('active');
+    });
+});
+    </script>

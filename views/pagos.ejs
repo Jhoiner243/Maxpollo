@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Pagos - MaxPollo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <main class="container my-5">
+    <h2 class="mb-4 text-primary"><i class="bi bi-cash me-2"></i>Gestión de Pagos</h2>
+    <h3>Pedidos Pendientes:</h3>
+    <table class="table table-striped">
+      <thead class="table-primary">
+        <tr>
+          <th>ID Pedido</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Total (COP)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="lista-pedidos-pendientes">
+        <!-- Aquí se listarán los pedidos pendientes -->
+      </tbody>
+    </table>
+
+    <h3>Pedidos Fiados:</h3>
+    <table class="table table-striped">
+      <thead class="table-secondary">
+        <tr>
+          <th>ID Pedido</th>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Total (COP)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="lista-pedidos-fiados">
+        <!-- Aquí se listarán los pedidos fiados -->
+      </tbody>
+    </table>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      cargarPedidosPendientes();
+      cargarPedidosFiados();
+    });
+
+    function marcarComoPagado(id) {
+      fetch(`/api/pagos/${id}/pagar`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          alert('Pedido marcado como pagado');
+          cargarPedidosPendientes();
+          cargarPedidosFiados();
+        });
+    }
+
+    function marcarComoFiado(id) {
+      fetch(`/api/pagos/${id}/fiar`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          alert('Pedido marcado como fiado');
+          cargarPedidosPendientes();
+          cargarPedidosFiados();
+        });
+    }
+
+    function cargarPedidosPendientes() {
+      fetch('/api/pedidos/pendientes')
+        .then(response => response.json())
+        .then(pedidos => {
+          const lista = document.getElementById('lista-pedidos-pendientes');
+          lista.innerHTML = '';
+          pedidos.forEach(pedido => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${pedido.id}</td>
+              <td>${pedido.cliente}</td>
+              <td>${pedido.fecha}</td>
+              <td>${pedido.total}</td>
+              <td>
+                <button class="btn btn-success me-2" onclick="marcarComoPagado(${pedido.id})">Marcar como Pagado</button>
+                <button class="btn btn-warning" onclick="marcarComoFiado(${pedido.id})">Marcar como Fiado</button>
+              </td>
+            `;
+            lista.appendChild(tr);
+          });
+        });
+    }
+
+    function cargarPedidosFiados() {
+      fetch('/api/pedidos/fiados')
+        .then(response => response.json())
+        .then(pedidos => {
+          const lista = document.getElementById('lista-pedidos-fiados');
+          lista.innerHTML = '';
+          pedidos.forEach(pedido => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${pedido.id}</td>
+              <td>${pedido.cliente}</td>
+              <td>${pedido.fecha}</td>
+              <td>${pedido.total}</td>
+              <td>
+                <button class="btn btn-success" onclick="marcarComoPagado(${pedido.id})">Marcar como Pagado</button>
+              </td>
+            `;
+            lista.appendChild(tr);
+          });
+        });
+    }
+  </script>
+</body>
+</html>

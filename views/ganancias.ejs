@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganancias Semanales</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <%- include('partials/navbar') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Ganancias diarias
+
+
+
+
+        </h1>
+        <div class="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto">
+            <% if (datos && datos.gananciasSemanales.length > 0) { %>
+                <ul class="space-y-4">
+                    <% datos.gananciasSemanales.forEach(dia => { %>
+                        <li class="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span class="text-lg font-semibold text-gray-700"><%= dia.fecha %></span>
+                            <span class="text-xl font-bold <%= parseFloat(dia.ganancia) >= 0 ? 'text-g|reen-600' : 'text-red-600' %>">
+                                $<%= parseFloat(dia.ganancia).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                            </span>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p class="text-center text-gray-600 text-lg">No hay ganancias registradas en los últimos días.</p>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

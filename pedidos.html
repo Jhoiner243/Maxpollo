@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Contabilidad MaxPollo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bg-primary text-white py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0"><i class="bi bi-egg-fried"></i> Sistema de contabilidad </h1>
+        <nav>
+          <button id="btn-inicializar" class="btn btn-light me-2">Inicializar</button>
+          <button id="btn-ingresar-pedido" class="btn btn-light me-2" disabled>Ingresar Pedido</button>
+          <button id="btn-calcular-ganancias" class="btn btn-light me-2" disabled>Calcular Ganancias</button>
+          <button id="btn-ver-inventario" class="btn btn-light" disabled>Ver Inventario</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-5">
+    <section id="seccion-inicial" class="hidden">
+      <h2 class="mb-4 text-primary"><i class="bi bi-box-seam me-2"></i>Inicializar Inventario</h2>
+      <form id="form-inventario" class="row g-3">
+        <div id="lista-inicial" class="col-12"></div>
+        <div class="col-12 d-flex align-items-end">
+          <button type="button" id="btn-guardar-inventario" class="btn btn-primary">Guardar Inventario</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="seccion-pedido" class="hidden">
+      <h2 class="mb-4 text-primary"><i class="bi bi-cart-plus me-2"></i>Ingresar Pedido</h2>
+      <form id="form-pedido" class="row g-3">
+        <div class="col-md-4">
+          <label for="producto" class="form-label">Producto:</label>
+          <select id="producto" name="producto" class="form-select"></select>
+        </div>
+        <div class="col-md-4">
+          <label for="cantidad" class="form-label">Cantidad Vendida (kg):</label>
+          <input type="number" id="cantidad" name="cantidad" class="form-control" step="0.1" min="0" required>
+        </div>
+        <div class="col-md-4">
+          <label for="precioVenta" class="form-label">Precio de Venta (COP):</label>
+          <input type="number" id="precioVenta" name="precioVenta" class="form-control" step="0.01" min="0" required>
+        </div>
+        <div class="col-12">
+          <button type="button" id="btn-agregar-producto" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Agregar Producto</button>
+        </div>
+      </form>
+      <div id="productos-agregados" class="mt-4">
+        <h3 class="text-primary"><i class="bi bi-cart me-2"></i>Productos Agregados:</h3>
+        <ul id="lista-productos" class="list-group mb-3"></ul>
+        <button id="btn-finalizar-pedido" class="btn btn-success" disabled><i class="bi bi-check-circle me-2"></i>Finalizar Pedido</button>
+      </div>
+    </section>
+
+    <section id="seccion-factura" class="hidden">
+      <h2 class="mb-4 text-primary"><i class="bi bi-receipt me-2"></i>Factura del Pedido</h2>
+      <div id="factura-pedido" class="card">
+        <div class="card-body">
+          <h5 class="card-title">Pedido</h5>
+          <ul id="lista-productos-factura" class="list-group mb-3"></ul>
+          <p><strong>Total: <span id="total-factura">0 COP</span></strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="seccion-pedidos-dia" class="hidden">
+      <h2 class="mb-4 text-primary"><i class="bi bi-list-ul me-2"></i>Pedidos del Día:</h2>
+      <table id="tabla-pedidos" class="table table-striped">
+        <thead class="table-primary">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad Vendida (kg)</th>
+            <th>Precio de Venta (COP)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="seccion-ganancias-dia" class="hidden">
+      <h2 class="mb-4 text-primary"><i class="bi bi-currency-dollar me-2"></i>Ganancias del Día:</h2>
+      <ul id="lista-ganancias-reales" class="list-group mb-3"></ul>
+      <h3 class="text-primary">Ganancia Total: <span id="total-ganancias">0 COP</span></h3>
+    </section>
+
+    <section id="seccion-inventario" class="hidden">
+      <h2 class="mb-4 text-primary"><i class="bi bi-archive me-2"></i>Inventario Actual:</h2>
+      <table id="tabla-inventario" class="table table-striped">
+        <thead class="table-primary">
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad Restante (kg)</th>
+            <th>Precio de Compra (COP)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
